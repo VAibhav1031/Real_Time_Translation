@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3>Join or Create Conversation</h3>
+
+<form action="/join" method="POST">
+    {{ form.hidden_tag() }}
+
+    <label>Room ID</label>
+    <input type="text" name="room" id="roomInput" placeholder="Enter or generate room ID" required>
+
+    <button type="button" class="secondary" onclick="generateRoom()">Create Room</button>
+
+    <label>Select Role</label>
+    <select name="role" required>
+        <option value="doctor">Doctor</option>
+        <option value="patient">Patient</option>
+    </select>
+
+    <label>Your Language</label>
+    <select name="language" required>
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+    </select>
+
+    <br><br>
+    <button type="submit" class="primary">Join Chat</button>
+</form>
+
+<p class="chat-meta">
+    Doctor and patient must use the same Room ID.
+</p>
+
+<script>
+function generateRoom() {
+    const id = Math.random().toString(36).substring(2, 8);
+    document.getElementById("roomInput").value = id;
+
+    if (!id) return;
+    await fetch("/create_room/${room}/${role}/${lang}",{
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            room: id,
+            role: role,
+            language: language  
+        })
+    });
+}
+</script>
+
+{% endblock %}
+

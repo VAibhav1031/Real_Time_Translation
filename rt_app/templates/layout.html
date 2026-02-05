@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor–Patient Translator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        label {
+            font-weight: 600;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 100%;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        button.primary {
+            background: #1e88e5;
+            color: white;
+        }
+
+        button.secondary {
+            background: #e3f2fd;
+            color: #1565c0;
+
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .chat-box {
+            background: #f9fafb;
+            padding: 10px;
+            height: 360px;
+            overflow-y: auto;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
+        .doctor {
+            background: #e3f2fd;
+            align-self: flex-end;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .patient {
+            background: #e8f5e9;
+            align-self: flex-start;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input input {
+            flex: 1;
+        }
+
+        .chat-meta {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    Doctor–Patient Translation App
+</header>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
+

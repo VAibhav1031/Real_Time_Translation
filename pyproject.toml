@@ -1,0 +1,7 @@
+[project]
+name = "rt-doctor-patient-translation"
+version = "0.1.0"
+description = "It is a real time doctor patient translation either through chat/text or audio/"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
