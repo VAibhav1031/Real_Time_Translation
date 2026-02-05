@@ -12,13 +12,13 @@
     <button type="button" class="secondary" onclick="generateRoom()">Create Room</button>
 
     <label>Select Role</label>
-    <select name="role" required>
+    <select name="role" id="roleInput" required>
         <option value="doctor">Doctor</option>
         <option value="patient">Patient</option>
     </select>
 
     <label>Your Language</label>
-    <select name="language" required>
+    <select name="language" id="langInput" required>
         <option value="en">English</option>
         <option value="hi">Hindi</option>
         <option value="es">Spanish</option>
@@ -34,12 +34,16 @@
 </p>
 
 <script>
-function generateRoom() {
+async function generateRoom() {
     const id = Math.random().toString(36).substring(2, 8);
     document.getElementById("roomInput").value = id;
 
+    const role = document.getElementById("roleInput").value;
+    const language = document.getElementById("langInput").value;
+    
     if (!id) return;
-    await fetch("/create_room/${room}/${role}/${lang}",{
+
+    await fetch("/create_room",{
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -48,6 +52,9 @@ function generateRoom() {
             language: language  
         })
     });
+
+    window.location.href = `/chat/${id}/${role}/${language}`;
+
 }
 </script>
 

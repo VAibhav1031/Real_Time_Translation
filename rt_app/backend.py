@@ -4,7 +4,7 @@ from rt_app.models import Conversation,RoomUser
 import datetime
 from rt_app.forms import JoinChatForm
 from rt_app  import csrf
-from rt_app.gemini_service import translate_text
+from rt_app.gemini_service import translate_text,generate_medical_summary
 
 main =  Blueprint("main",__name__)
 
@@ -34,7 +34,7 @@ def join_chat():
 
 @main.route("/chat/<room>/<role>/<lang>")
 def chat(room, role,lang):
-    return render_template("chat.html",room=room,role=role,lang=lang)
+    return render_template("chat.html",title=role,room=room,role=role,lang=lang)
 
 @main.route("/send_message",methods=["POST"])
 @csrf.exempt
@@ -92,3 +92,32 @@ def load_message(room):
             }
 
             )
+
+
+@main.route("/create_room",methods=["POST"])
+@csrf.exempt
+def create_room():
+    data = request.get_json()
+    print(data)
+    role = data['role']
+    room = data['room']
+    lang = data['language']
+    room_user = RoomUser(
+        room=room,
+        role=role,
+        language=lang
+    )
+    db.session.add(room_user)
+    db.session.commit()
+    return jsonify({"status":"Success Created room"})
+
+
+@main.route("/summary/<room>", methods=["GET"])
+@csrf.exempt
+def generate_summary(room):
+    conversation = Conversation.query.filter_by(room=room).all()
+
+    summary = generate_medical_summary(conversation)
+
+
+    return jsonify({"summary": summary})

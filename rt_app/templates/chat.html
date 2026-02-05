@@ -15,7 +15,24 @@
 </div>
 
 <br>
-<button class="secondary" onclick="generateSummary()">Generate Summary</button>
+
+<div style="display: flex; gap: 10px;">
+    <button class="secondary" onclick="generateSummary()">Generate Summary</button>
+    <button class="secondary" onclick="exitRoom()">Exit Room</button>
+</div>
+
+<!-- Summary Output -->
+<div id="summaryBox" style="
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafafa;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+">
+</div>
 
 <script>
 const room = "{{ room }}";
@@ -33,7 +50,8 @@ async function loadMessages() {
         const div = document.createElement("div");
         div.classList.add("message");
         div.classList.add(msg.role.toLowerCase());
-        div.innerText = `[${msg.role}] ${msg.translated_text}`;               chatBox.appendChild(div);
+        div.innerText = `[${msg.role}] ${msg.translated_text}`;
+        chatBox.appendChild(div);
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -60,9 +78,20 @@ async function sendMessage() {
 }
 
 async function generateSummary() {
+    const summaryBox = document.getElementById("summaryBox");
+    summaryBox.style.display = "block";
+    summaryBox.innerText = "Generating summary...";
+
     const res = await fetch(`/summary/${room}`);
     const data = await res.json();
-    alert(data.summary);
+
+    summaryBox.innerText = data.summary || "No summary available.";
+}
+
+function exitRoom() {
+    if (confirm("Exit this conversation?")) {
+        window.location.href = "/";
+    }
 }
 
 setInterval(loadMessages, 2000);
@@ -70,3 +99,4 @@ loadMessages();
 </script>
 
 {% endblock %}
+
