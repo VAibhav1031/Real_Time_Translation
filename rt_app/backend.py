@@ -7,11 +7,27 @@ from rt_app  import csrf
 from rt_app.gemini_service import translate_text,generate_medical_summary
 
 main =  Blueprint("main",__name__)
-
+translation_cache = {}
 @main.route("/")
 def home():
     form = JoinChatForm()
     return render_template("home.html",form=form)
+
+
+
+def cache_translation(text,from_lang, to_lang):
+
+    key = f"{from_lang}|{to_lang}|{text}"
+
+
+    if key in translation_cache:
+        return translation_cache[key]
+
+
+    translated = translate_text(text,from_lang,to_lang)
+    translation_cache[key] = translated
+
+    return translated
 
 
 @main.route("/join",methods=["POST"])
@@ -34,7 +50,7 @@ def join_chat():
 
 @main.route("/chat/<room>/<role>/<lang>")
 def chat(room, role,lang):
-    return render_template("chat.html",title=role,room=room,role=role,lang=lang)
+    return render_template("chat.html",title=role.title(),room=room,role=role,lang=lang)
 
 @main.route("/send_message",methods=["POST"])
 @csrf.exempt
@@ -61,7 +77,7 @@ def send_message():
         target  = RoomUser.query.filter_by(room=room,role='doctor').first()
     print(target.language)
     to_lang = lang_mapper[target.language]
-    translated_text = translate_text(text, fromlang, to_lang)
+    translated_text = cache_translation(text, fromlang, to_lang)
 
     # print(f"Translated Text : {translated_text}")
     conversation = Conversation(
@@ -117,7 +133,18 @@ def create_room():
 def generate_summary(room):
     conversation = Conversation.query.filter_by(room=room).all()
 
-    summary = generate_medical_summary(conversation)
+    conversation_ = {
+                "data": [{
+                "role": c.role,
+                "room": c.room,
+                "translated_text": c.translated_text
+                }
+                for c in conversation
+                ]
+            }
+ 
+    summary = generate_medical_summary(conversation_)
 
 
     return jsonify({"summary": summary})
+

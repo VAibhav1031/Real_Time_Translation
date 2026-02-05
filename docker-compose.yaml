@@ -1,0 +1,63 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+       - ./migrations:/real_time_app/migrations 
+
+    ports:
+      - "127.0.0.1:2424:2424" 
+    
+    env_file:
+      - .env
+    environment:
+      DEV_DB_HOST: dev-db
+      DEV_DB_USER: ${DEV_DB_USER}
+      DEV_DB_PASSWORD: ${DEV_DB_PASSWORD}
+      DEV_DB_NAME: ${DEV_DB_NAME}
+      DEV_DB_PORT: 5432
+
+    
+    depends_on:
+      dev-db:
+        condition: service_healthy
+
+
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: /task_app
+          ignore:
+            - .venv/
+            - .git/
+            - .egg-info/
+            - __pycache__
+
+
+    # entrypoint: ./docker-entrypoint.sh
+    command: ["gunicorn", "-w", "3", "-b", "0.0.0.0:2424", "run:app"]
+
+
+  dev-db:
+    image: postgres:17
+
+    environment:
+      POSTGRES_USER: ${DEV_DB_USER}
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD}
+      POSTGRES_DB: ${DEV_DB_NAME}
+    volumes:
+      - real_time_app_data:/bitnami/postgresql/data
+
+    healthcheck:
+
+      test: ["CMD-SHELL", "pg_isready -U ${DEV_DB_USER}  -d ${DEV_DB_NAME} "]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  real_time_app_data:
+    name: real_time_app_data 

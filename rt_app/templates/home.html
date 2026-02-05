@@ -1,16 +1,23 @@
+
 {% extends "layout.html" %}
 {% block content %}
 
-<h3>Join or Create Conversation</h3>
+<h3>Start a Conversation</h3>
 
-<form action="/join" method="POST">
+<div style="display:flex; gap:10px; margin-bottom:20px;">
+    <button id="createBtn" class="primary" onclick="setMode('create')">Create Room</button>
+    <button id="joinBtn" class="secondary" onclick="setMode('join')">Join Room</button>
+</div>
+
+<form action="/join" method="POST" id="joinForm">
     {{ form.hidden_tag() }}
 
-    <label>Room ID</label>
-    <input type="text" name="room" id="roomInput" placeholder="Enter or generate room ID" required>
+    <div id="roomSection">
+        <label>Room ID</label>
+        <input type="text" name="room" id="roomInput" placeholder="Enter room ID" required>
+    </div>
 
-    <button type="button" class="secondary" onclick="generateRoom()">Create Room</button>
-
+    
     <label>Select Role</label>
     <select name="role" id="roleInput" required>
         <option value="doctor">Doctor</option>
@@ -26,36 +33,42 @@
     </select>
 
     <br><br>
-    <button type="submit" class="primary">Join Chat</button>
+    <button type="submit" class="primary" id="submitBtn">Join Chat</button>
 </form>
 
-<p class="chat-meta">
-    Doctor and patient must use the same Room ID.
+<p class="chat-meta" id="helperText">
+    Join an existing conversation using a shared Room ID.
 </p>
 
 <script>
-async function generateRoom() {
-    const id = Math.random().toString(36).substring(2, 8);
-    document.getElementById("roomInput").value = id;
+let mode = "join";
 
-    const role = document.getElementById("roleInput").value;
-    const language = document.getElementById("langInput").value;
-    
-    if (!id) return;
+function setMode(selected) {
+    mode = selected;
 
-    await fetch("/create_room",{
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            room: id,
-            role: role,
-            language: language  
-        })
-    });
+    const roomInput = document.getElementById("roomInput");
+    const helper = document.getElementById("helperText");
+    const submitBtn = document.getElementById("submitBtn");
 
-    window.location.href = `/chat/${id}/${role}/${language}`;
+    document.getElementById("createBtn").className = selected === "create" ? "primary" : "secondary";
+    document.getElementById("joinBtn").className = selected === "join" ? "primary" : "secondary";
 
+    if (selected === "create") {
+        const id = Math.random().toString(36).substring(2, 8);
+        roomInput.value = id;
+        roomInput.readOnly = true;
+        helper.innerText = "A new Room ID has been generated. Share it with the other participant.";
+        submitBtn.innerText = "Create & Enter Chat";
+    } else {
+        roomInput.value = "";
+        roomInput.readOnly = false;
+        helper.innerText = "Join an existing conversation using a shared Room ID.";
+        submitBtn.innerText = "Join Chat";
+    }
 }
+
+// default mode
+setMode("join");
 </script>
 
 {% endblock %}
