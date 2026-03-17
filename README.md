@@ -4,7 +4,7 @@
 
 ## Overview
 
-This project is a full-stack web application that acts as a real-time translation bridge between a doctor and a patient.
+This project is a  web application that acts as a real-time translation bridge between a doctor and a patient.
 It is designed as a focused prototype to demonstrate system design, AI integration, and practical engineering trade-offs under time constraints.
 
 The application supports a one-to-one doctor–patient conversation where messages (text) are automatically translated into the other participant’s language, logged for persistence, searchable, and summarizable using an LLM.
@@ -78,36 +78,6 @@ The goal of this project is t**clarity, correctness, and completeness**, not ove
 
 ---
 
-## Tech Stack
-
-### Backend
-
-* **Python**
-* **Flask**
-* **Flask-WTF** (forms & CSRF handling)
-* **SQLAlchemy**
-* **Alembic** (migrations)
-* **SQLite / Postgres** (environment-dependent)
-
-### Frontend
-
-* Server-rendered HTML (Jinja)
-* Vanilla JavaScript
-* Custom CSS (no frameworks)
-
-### AI / LLM
-
-* **Google Gemini API (free tier)**
-* Used for:
-
-  * translation
-  * medical conversation summarization
-
-### Tooling
-
-* Docker
-* docker-compose
-* Environment-based configuration (dev / prod)
 
 ---
 
@@ -180,11 +150,6 @@ Environment variables control which config is active, allowing easy switching wi
 * Sufficient for low-volume, one-to-one chat
 * Easier to reason about and debug
 
-### No Authentication
-
-* Out of scope for the assignment
-* Focus was kept on translation, logging, and summarization
-* Roles are explicit per session
 
 ### One Room = One Doctor + One Patient
 
@@ -214,7 +179,6 @@ These were **intentional trade-offs** to prioritize correctness, clarity, and ti
 
 ## What Could Be Added Next
 
-If given more time:
 
 * Audio recording and playback using MediaRecorder API
 * WebSocket-based real-time messaging
@@ -233,17 +197,6 @@ AI tools were used appropriately:
 * LLM prompts were explicitly constrained to avoid hallucinations
 * No model training or fine-tuning was performed
 
----
 
-## Final Notes
 
-This project intentionally focuses on **engineering judgment**:
-
-* clear boundaries
-* explicit trade-offs
-* readable code
-* working deployment
-
-I Know It is not to be a production healthcare system, but a practical demonstration of how such a system could be designed and built responsibly under limited time.
-Not good on frontend part, but can understand and love to work as a backend :)
 
